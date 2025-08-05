@@ -15,9 +15,9 @@ def check_headers(response):
     }
     for header in headers:
         if header in response.headers:
-            print(f"✅ {headers[header]} is enabled.")
+            print(f" {headers[header]} is enabled.")
         else:
-            print(f"❌ {headers[header]} is MISSING!")
+            print(f"{headers[header]} is MISSING!")
 
 # Check for open directories
 def check_open_directory():
@@ -27,33 +27,33 @@ def check_open_directory():
         test_url = url.rstrip("/") + path
         res = requests.get(test_url)
         if res.status_code == 200 and "Index of /" in res.text:
-            print(f"⚠️ Open directory found at: {test_url}")
+            print(f" Open directory found at: {test_url}")
         elif res.status_code == 200:
-            print(f"🧐 Accessible: {test_url}")
+            print(f"Accessible: {test_url}")
         else:
-            print(f"❌ Not found: {test_url}")
+            print(f" Not found: {test_url}")
 def check_http_methods():
     print("\n[+] Checking Allowed HTTP Methods (OPTIONS)...")
     try:
         options_response = requests.options(url)
         methods = options_response.headers.get('Allow')
         if methods:
-            print(f"✅ Allowed Methods: {methods}")
+            print(f" Allowed Methods: {methods}")
             risky_methods = ['PUT', 'DELETE', 'TRACE', 'CONNECT']
             for method in risky_methods:
                 if method in methods:
-                    print(f"⚠️ Risky method enabled: {method}")
+                    print(f"Risky method enabled: {method}")
         else:
-            print("❌ Could not determine allowed methods.")
+            print(" Could not determine allowed methods.")
     except Exception as e:
-        print(f"❌ Error checking HTTP methods: {e}")
+        print(f" Error checking HTTP methods: {e}")
 
 def check_sql_injection():
     print("\n[+] Checking for basic SQL Injection vulnerabilities...")
     test_payloads = ["'", "' OR '1'='1", '" OR "1"="1', "';--", '" OR 1=1--']
     
     if '?' not in url:
-        print("ℹ️ No parameters in URL to test for SQL Injection.")
+        print(" No parameters in URL to test for SQL Injection.")
         return
     
     for payload in test_payloads:
@@ -69,10 +69,10 @@ def check_sql_injection():
         try:
             r = requests.get(test_url)
             if any(error in r.text.lower() for error in ['sql', 'syntax', 'mysql', 'warning']):
-                print(f"⚠️ Possible SQL Injection vulnerability with payload: {payload}")
+                print(f" Possible SQL Injection vulnerability with payload: {payload}")
                 print(f"   → URL: {test_url}")
         except Exception as e:
-            print(f"❌ Error testing payload {payload}: {e}")
+            print(f"Error testing payload {payload}: {e}")
 
 
 # Main
